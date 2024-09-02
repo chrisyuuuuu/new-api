@@ -103,7 +103,8 @@ docker run --name new-api -d --restart always -p 3000:3000 -e SQL_DSN="root:1234
    # 构建后端
    cd ../
    go mod download
-   go build -ldflags "-s -w" -o one-api
+   go build -ldflags "-s -w" -o one-api 
+   上报错可执行 go build -ldflags "-s -w" -buildvcs=false -o one-api
    ````
 2. 运行：
    ```shell
