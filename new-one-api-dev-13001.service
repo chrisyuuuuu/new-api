@@ -1,0 +1,14 @@
+[Unit]
+Description=New One API Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/data/kendrick/dev/new-api-main
+EnvironmentFile=/data/kendrick/dev/new-api-main/.env
+ExecStart=/data/kendrick/dev/new-api-main/one-api --port 13001 --log-dir /data/kendrick/dev/new-api-main/logs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
