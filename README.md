@@ -90,6 +90,27 @@ docker run --name new-api -d --restart always -p 3000:3000 -e SQL_DSN="root:1234
 # 注意：数据库要开启远程访问，并且只允许服务器IP访问
 ```
 
+### 手动部署
+1. 从 Github下载可执行文件或者从源码编译：
+   ```shell
+   git clone https://github.com/songquanpeng/one-api.git
+   
+   # 构建前端
+   cd new-api/web/
+   npm install
+   npx vite build
+   
+   # 构建后端
+   cd ../
+   go mod download
+   go build -ldflags "-s -w" -o one-api
+   ````
+2. 运行：
+   ```shell
+   chmod u+x one-api
+   ./one-api --port 3000 --log-dir ./logs
+   ```
+   
 ## 渠道重试
 渠道重试功能已经实现，可以在`设置->运营设置->通用设置`设置重试次数，**建议开启缓存**功能。  
 如果开启了重试功能，第一次重试使用同优先级，第二次重试使用下一个优先级，以此类推。
