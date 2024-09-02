@@ -42,6 +42,11 @@ func main() {
 	if err != nil {
 		common.FatalLog("failed to initialize database: " + err.Error())
 	}
+	// Initialize SQL Database
+	err = model.InitLogDB()
+	if err != nil {
+		common.FatalLog("failed to initialize database: " + err.Error())
+	}
 	defer func() {
 		err := model.CloseDB()
 		if err != nil {
@@ -55,6 +60,8 @@ func main() {
 		common.FatalLog("failed to initialize Redis: " + err.Error())
 	}
 
+	// Initialize constants
+	constant.InitEnv()
 	// Initialize options
 	model.InitOptionMap()
 	if common.RedisEnabled {

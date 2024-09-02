@@ -38,9 +38,7 @@ func getAndValidImageRequest(c *gin.Context, info *relaycommon.RelayInfo) (*dto.
 	if imageRequest.Model == "" {
 		imageRequest.Model = "dall-e-2"
 	}
-	if imageRequest.Quality == "" {
-		imageRequest.Quality = "standard"
-	}
+
 	// Not "256x256", "512x512", or "1024x1024"
 	if imageRequest.Model == "dall-e-2" || imageRequest.Model == "dall-e" {
 		if imageRequest.Size != "" && imageRequest.Size != "256x256" && imageRequest.Size != "512x512" && imageRequest.Size != "1024x1024" {
@@ -49,6 +47,9 @@ func getAndValidImageRequest(c *gin.Context, info *relaycommon.RelayInfo) (*dto.
 	} else if imageRequest.Model == "dall-e-3" {
 		if imageRequest.Size != "" && imageRequest.Size != "1024x1024" && imageRequest.Size != "1024x1792" && imageRequest.Size != "1792x1024" {
 			return nil, errors.New("size must be one of 256x256, 512x512, or 1024x1024, dall-e-3 1024x1792 or 1792x1024")
+		}
+		if imageRequest.Quality == "" {
+			imageRequest.Quality = "standard"
 		}
 		//if imageRequest.N != 1 {
 		//	return nil, errors.New("n must be 1")
@@ -121,10 +122,11 @@ func ImageHelper(c *gin.Context, relayMode int) *dto.OpenAIErrorWithStatusCode {
 		}
 	}
 
-	quota := int(modelPrice*groupRatio*common.QuotaPerUnit*sizeRatio*qualityRatio) * imageRequest.N
+	imageRatio := modelPrice * sizeRatio * qualityRatio * float64(imageRequest.N)
+	quota := int(imageRatio * groupRatio * common.QuotaPerUnit)
 
 	if userQuota-quota < 0 {
-		return service.OpenAIErrorWrapperLocal(errors.New("user quota is not enough"), "insufficient_user_quota", http.StatusForbidden)
+		return service.OpenAIErrorWrapperLocal(errors.New(fmt.Sprintf("image pre-consumed quota failed, user quota: %d, need quota: %d", userQuota, quota)), "insufficient_user_quota", http.StatusBadRequest)
 	}
 
 	adaptor := GetAdaptor(relayInfo.ApiType)
@@ -180,7 +182,7 @@ func ImageHelper(c *gin.Context, relayMode int) *dto.OpenAIErrorWithStatusCode {
 	}
 
 	logContent := fmt.Sprintf("大小 %s, 品质 %s", imageRequest.Size, quality)
-	postConsumeQuota(c, relayInfo, imageRequest.Model, usage, 0, 0, userQuota, 0, groupRatio, modelPrice, true, logContent)
+	postConsumeQuota(c, relayInfo, imageRequest.Model, usage, 0, 0, userQuota, 0, groupRatio, imageRatio, true, logContent)
 
 	return nil
 }
