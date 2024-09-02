@@ -87,7 +87,6 @@ func RecordConsumeLog(ctx context.Context, userId int, alphaUserId, alphaUsernam
 		UseTime:          useTimeSeconds,
 		IsStream:         isStream,
 		Other:            otherStr,
-		//LogErr:           logErr,
 	}
 	err := DB.Create(log).Error
 	if err != nil {

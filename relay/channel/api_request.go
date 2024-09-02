@@ -1,7 +1,6 @@
 package channel
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -26,19 +25,16 @@ func SetupApiRequestHeader(info *common.RelayInfo, c *gin.Context, req *http.Req
 
 func DoApiRequest(a Adaptor, c *gin.Context, info *common.RelayInfo, requestBody io.Reader) (*http.Response, error) {
 	fullRequestURL, err := a.GetRequestURL(info)
-	fmt.Println(">>fullRequestURL:", fullRequestURL)
 	if err != nil {
 		return nil, fmt.Errorf("get request url failed: %w", err)
 	}
-	bs, _ := json.Marshal(requestBody)
-	fmt.Println(">>body: ", string(bs))
+
 	req, err := http.NewRequest(c.Request.Method, fullRequestURL, requestBody)
 	if err != nil {
 		return nil, fmt.Errorf("new request failed: %w", err)
 	}
 	err = a.SetupRequestHeader(c, req, info)
-	in, _ := json.Marshal(info)
-	fmt.Println(">>info: ", string(in))
+
 	if err != nil {
 		return nil, fmt.Errorf("setup request header failed: %w", err)
 	}

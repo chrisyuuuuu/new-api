@@ -294,6 +294,7 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, modelN
 	tokenName := ctx.GetString("token_name")
 	alphaUserId := ctx.GetString("alpha_user_id")
 	alphaUsername := ctx.GetString("alpha_username")
+
 	completionRatio := common.GetCompletionRatio(modelName)
 
 	quota := 0
@@ -350,6 +351,7 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, modelN
 		logContent += ", " + extraContent
 	}
 	other := service.GenerateTextOtherInfo(ctx, relayInfo, modelRatio, groupRatio, completionRatio, modelPrice)
+
 	model.RecordConsumeLog(ctx, relayInfo.UserId, alphaUserId, alphaUsername, relayInfo.ChannelId, promptTokens, completionTokens, logModel,
 		tokenName, quota, logContent, relayInfo.TokenId, userQuota, int(useTimeSeconds), relayInfo.IsStream, other)
 

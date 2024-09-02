@@ -129,6 +129,7 @@ func RelayTaskSubmit(c *gin.Context, relayMode int) (taskErr *dto.TaskError) {
 				alphaUserId := c.GetString("alpha_user_id")
 				alphaUsername := c.GetString("alpha_username")
 				model.RecordConsumeLog(ctx, relayInfo.UserId, alphaUserId, alphaUsername, relayInfo.ChannelId, 0, 0, modelName, tokenName, quota, logContent, relayInfo.TokenId, userQuota, 0, false, other)
+
 				model.UpdateUserUsedQuotaAndRequestCount(relayInfo.UserId, quota)
 				model.UpdateChannelUsedQuota(relayInfo.ChannelId, quota)
 			}

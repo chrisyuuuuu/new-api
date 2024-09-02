@@ -49,6 +49,10 @@ func (a *Adaptor) GetRequestURL(info *relaycommon.RelayInfo) (string, error) {
 	// 	url := info.BaseUrl
 	// 	url = strings.Replace(url, "{model}", info.UpstreamModelName, -1)
 	// 	return url, nil
+	case common.ChannelTypeCustom:
+		url := info.BaseUrl
+		url = strings.Replace(url, "{model}", info.UpstreamModelName, -1)
+		return url, nil
 	default:
 		return relaycommon.GetFullRequestURL(info.BaseUrl, info.RequestURLPath, info.ChannelType), nil
 	}
