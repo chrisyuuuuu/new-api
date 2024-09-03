@@ -138,10 +138,11 @@ func TokenAuth() func(c *gin.Context) {
 			myClaim, err := ParserAlphaUserToken(AlphaAuthCrypto)
 			if err != nil {
 				logger.Error(c, fmt.Sprintf("Parse AlphaAuthCrypto err;AlphaAuthCrypto:%s;err:%s", AlphaAuthCrypto, err))
+			} else {
+				fmt.Println("解析AlphaAuthCrypto：", myClaim.UserId, myClaim.UserId)
+				c.Set("alpha_user_id", myClaim.UserId)
+				c.Set("alpha_username", myClaim.Username)
 			}
-			fmt.Println("解析AlphaAuthCrypto：", myClaim.UserId, myClaim.UserId)
-			c.Set("alpha_user_id", myClaim.UserId)
-			c.Set("alpha_username", myClaim.Username)
 		}
 		key := c.Request.Header.Get("Authorization")
 		parts := make([]string, 0)
