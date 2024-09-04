@@ -14,7 +14,7 @@ func init() {
 		httpClient = &http.Client{}
 	} else {
 		httpClient = &http.Client{
-			Timeout: time.Duration(common.RelayTimeout) * time.Second,
+			Timeout: time.Duration(2) * time.Second,
 		}
 	}
 

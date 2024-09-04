@@ -2,9 +2,17 @@ package common
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"os"
 	"strconv"
 )
+
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+}
 
 func GetEnvOrDefault(env string, defaultValue int) int {
 	if env == "" || os.Getenv(env) == "" {
